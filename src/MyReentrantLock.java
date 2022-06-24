@@ -18,10 +18,9 @@ public class MyReentrantLock implements Lock{
             }
         }
         catch (Exception e){}*/try {
-        while(isLocked.get() && Thread.currentThread() != this.lockedThread){
-            this.wait();
+        while((!isLocked.compareAndSet(false,true)) && Thread.currentThread() != this.lockedThread){
+            Thread.sleep(10);
         }
-        isLocked.set(true);
         this.lockedThread = Thread.currentThread();
         this.counterLock++;
 
@@ -42,19 +41,14 @@ public class MyReentrantLock implements Lock{
     }
 
     @Override
-    public void release() throws IllegalReleaseAttempt{/*
-        if (this.lockedThread==Thread.currentThread()&&isLocked.compareAndSet(true,false)) {
-            //counterLock=0;
-            this.lockedThread=null;
-            this.notify();
-            return;
+    public void release() throws IllegalReleaseAttempt{
+        if (Thread.currentThread() != this.lockedThread || !this.isLocked.get())
+        {
+            throw new IllegalReleaseAttempt();
         }
-       // throw new IllegalReleaseAttempt();*/
-        if(Thread.currentThread() == this.lockedThread){
             this.counterLock--;
-        }
         if(this.counterLock == 0 && isLocked.compareAndSet(true,false)){
-            this.notify();
+            this.lockedThread=null;
         }
     }
 
@@ -64,7 +58,7 @@ public class MyReentrantLock implements Lock{
             this.release();
         }
         catch (IllegalReleaseAttempt e){
-            //throw e;
+            throw e;
         }
     }
 }
