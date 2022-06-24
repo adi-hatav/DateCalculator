@@ -44,6 +44,7 @@ public class MyReentrantLock implements Lock {
 
     /**
      * try to acquire the lock
+     *
      * @return true if acquire is successful and false otherwise
      */
     @Override
@@ -65,10 +66,12 @@ public class MyReentrantLock implements Lock {
      * try to release the lock.
      * if locked a few times the decrease lock counter and if it is the last lock,
      * decrease lock counter and releases lock
+     *
+     * @throws IllegalReleaseAttempt if the current thread is not the locked thread or there is no lock to release
      */
     @Override
     public void release() {
-        // if the current thread is not the locked thread or there is no lick to release, throws unchecked error
+        // if the current thread is not the locked thread or there is no lock to release, throws unchecked error
         if (Thread.currentThread() != this.lockedThread || !this.isLocked.get()) {
             throw new IllegalReleaseAttempt();
         }
@@ -85,6 +88,8 @@ public class MyReentrantLock implements Lock {
 
     /**
      * releases the lock, enables use of try with resources
+     *
+     * @throws IllegalReleaseAttempt if the current thread is not the locked thread or there is no lock to release
      */
     @Override
     public void close() {
