@@ -1,6 +1,15 @@
 import java.util.ArrayDeque;
 
+/**
+ * represents LevelMostOccurrences calculator
+ */
 public class LevelMostOccurrences {
+    /**
+     *
+     * @param node root of binary tree to search on
+     * @param num number to search on tree
+     * @return the level with most occurrences on this tree
+     */
     public static int getLevelWithMostOccurrences(BinNode<Integer> node, int num) {
         ArrayDeque<Integer> depths = new ArrayDeque<>();
         ArrayDeque<BinNode<Integer>> nodes = new ArrayDeque<>();
