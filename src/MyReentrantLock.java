@@ -26,20 +26,20 @@ public class MyReentrantLock implements Lock {
     @Override
     public void acquire() {
         // if there are already locks from this thread then it increments the lock counter
-        if (this.counterLock != 0 && Thread.currentThread() == this.lockedThread)
-            this.counterLock++;
-        else {
+        // if there is new thread that wants to be locked and there are no current locks
+        if (this.counterLock == 0 || Thread.currentThread() != this.lockedThread) {
             // waits until the lock is released and when it happens, it atomically updates isLocked variable
             while (!isLocked.compareAndSet(false, true)) {
                 try {
-                    wait();
+                    Thread.sleep(10);
                 } catch (Exception e) {
                 }
             }
             // updates lockedThread to the current thread and increments the lock counter
             this.lockedThread = Thread.currentThread();
-            this.counterLock++;
         }
+        // if there are already locks from this thread then it only increments the lock counter
+        this.counterLock++;
     }
 
     /**
